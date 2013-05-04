@@ -1,0 +1,76 @@
+## define here or in /etc/nginx/nginx.conf if you have multiple sites sharing the same cache
+fastcgi_cache_path  /var/cache/nginx  levels=1:2 keys_zone=GETSIMPLE:10m inactive=15m;
+##
+                
+map $http_cookie $logged_in {
+    default 0;
+    ~xyk 1; # This will return true if user is logged in
+}
+
+server {
+  listen          80;
+  server_name     *.domain.com;
+  rewrite ^       http://sub.domain.com$request_uri permanent;
+}
+
+server {
+        listen 80;
+        server_name sub.domain.com;
+        charset utf-8;
+		error_log /var/log/nginx/error.log;
+        access_log off;
+        #rewrite_log on;
+		root /home/xyk/public;
+        index index.php;
+        
+        location / {
+			#try_files       $uri $uri/ /index.php?id=$uri&$args;
+			if (!-e $request_filename){
+              rewrite ^(/[A-Za-z0-9\-]+)?/([A-Za-z0-9\-]+)/?$ /index.php?id=$2 last;
+            } 
+          fastcgi_cache_bypass $logged_in;
+           fastcgi_no_cache $logged_in;
+        }
+
+       location ~* /admin/.*\.php$ {
+            try_files $uri /admin/index.php?id=$uri&$args;
+            include /etc/nginx/fastcgi_params;
+            fastcgi_cache_bypass $logged_in;
+            fastcgi_no_cache $logged_in;
+            fastcgi_index index.php;
+            fastcgi_pass unix:/var/run/php5-fpm.sock;
+       }        
+        
+        location ~* \.php$ {
+            include /etc/nginx/fastcgi_params;
+            fastcgi_index index.php;
+            try_files $uri =404;
+            fastcgi_cache_bypass $logged_in;
+            fastcgi_no_cache $logged_in;
+            fastcgi_pass unix:/var/run/php5-fpm.sock;
+            fastcgi_cache GETSIMPLE;
+            fastcgi_cache_key "$scheme$request_method$host$request_uri";
+            fastcgi_cache_valid  200 302  10s;
+            fastcgi_cache_valid  404      2m;
+            #expires 2h;
+        }
+
+        location ~* \.(?:ico|js|gif|jpg|png)$ {
+            #expires 14d;
+        }
+
+        location ~* \.(htm|css|html)$ {
+            #expires 2d;
+        }
+
+# this blocks direct access to the XML files (but sitemap.xml) - that hold all the data
+        location ~* \.xml$           { deny all; }
+        location = /sitemap.xml { allow all; }
+
+# this prevents hidden files (beginning with a period) from being served
+        location ~ /\.          { deny all; }
+
+        location ^~ /uploads/ {
+        if ($request_uri ~* \.php$) {return 403;}
+        }
+}

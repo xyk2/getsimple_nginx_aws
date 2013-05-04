@@ -1,7 +1,7 @@
 GetSimple with nginx and Amazon AWS
 =========
 
-All configuration files for running GetSimple 3.2.1 on nginx with AWS integration. Includes cron script for syncing /data/uploads/ with a S3 bucket, and CloudFront image linking.
+All configuration files for running GetSimple 3.2.1 on nginx with AWS integration. Includes cron scripts for syncing /data/uploads/ with a S3 bucket, and CloudFront image linking.
 
   - Syncs /data/uploads with a S3 bucket
   - Adds "CloudFront CDN" link option for embedded images
@@ -20,15 +20,15 @@ Tested on Ubuntu 12.04 LTS.
 * Edit configuration
 * Install vnstat
 * Install s3cmd
-* Disable apache-warning in gsconfig.php
-* Replace lines 169-171 of /admin/filebrowser.php with:
+* Disable apache-warning in `gsconfig.php`
+* Replace lines 169-171 of `/admin/filebrowser.php` with:
 		`$thumbnailLink = '<span>&nbsp;&ndash;&nbsp;&nbsp;</span><a href="javascript:void(0)" onclick="submitLink('.$CKEditorFuncNum.',\''.'http://***********.cloudfront.net/'.$subDir.$upload['name'].'\')">'.'CloudFront CDN'.'</a>';`
-* Create /home/user/cron directory, move _s3sync.py files, mark as exceutable
-* Crontab - /home/user/cron/0_s3sync.py, 15s, 30s, 45s
+* Create `/home/user/cron` directory, move *_s3sync.py files, mark as exceutable
+* Crontab - `/home/user/cron/0_s3sync.py`, 15s, 30s, 45s
 
 Warning
 -
-Keep in mind that the CloudFront integration changes the core, so whenever you update to a newer version of GS, look for the same lines in `/admin/filebrowser.php` and replace. 
+Keep in mind that the CloudFront integration changes the core files, so whenever you update to a newer version of GS, look for the same lines in `/admin/filebrowser.php` and replace. 
 
 Credit
 -
