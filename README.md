@@ -23,8 +23,9 @@ Tested on Ubuntu 12.04 LTS.
 * Disable apache-warning in `gsconfig.php`
 * Replace lines 169-171 of `/admin/filebrowser.php` with:
 		`$thumbnailLink = '<span>&nbsp;&ndash;&nbsp;&nbsp;</span><a href="javascript:void(0)" onclick="submitLink('.$CKEditorFuncNum.',\''.'http://***********.cloudfront.net/'.$subDir.$upload['name'].'\')">'.'CloudFront CDN'.'</a>';`
-* Create `/home/user/cron` directory, move *_s3sync.py files, mark as exceutable
-* Crontab - `/home/user/cron/0_s3sync.py`, 15s, 30s, 45s
+* Install `s3_upload_sync` plugin to plugins folder
+* Crontab - `plugins/s3_upload_sync/sync.py`, 15s, 30s, 45s
+
 
 Warning
 -
