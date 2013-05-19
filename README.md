@@ -25,7 +25,23 @@ Tested on Ubuntu 12.04 LTS.
 		`$thumbnailLink = '<span>&nbsp;&ndash;&nbsp;&nbsp;</span><a href="javascript:void(0)" onclick="submitLink('.$CKEditorFuncNum.',\''.'http://***********.cloudfront.net/'.$subDir.$upload['name'].'\')">'.'CloudFront CDN'.'</a>';`
 * Install `s3_upload_sync` plugin to plugins folder
 * Crontab - `plugins/s3_upload_sync/sync.py`, 15s, 30s, 45s
-
+* For file upload MD5 hashing in filenames (admin/upload.php line 48):
+	`
+			$md5 = md5_file($_FILES["file"]["tmp_name"][$i]); // EDITED to include MD5 hash
+			$md5 = substr($md5, 0, 5); // EDITED to include MD5 hash
+			
+			$file_loc = $path .  $md5 . '_' . clean_img_name(to7bit($_FILES["file"]["name"][$i])); // EDITED to include MD5 hash
+			
+			
+			$base = $md5 . '_' .clean_img_name(to7bit($_FILES["file"]["name"][$i])); // EDITED to include MD5 hash
+			
+			//prevent overwriting
+			while ( file_exists($file_loc) ) {
+				$file_loc = $path . $count.'-'. $md5 . '_' .clean_img_name(to7bit($_FILES["file"]["name"][$i])); // EDITED to include MD5 hash
+				$base = $count.'-'. $md5 . '_'. clean_img_name(to7bit($_FILES["file"]["name"][$i])); // EDITED to include MD5 hash
+				$count++;
+			}
+			`
 
 Warning
 -
