@@ -22,7 +22,7 @@ Tested on Ubuntu 12.04 LTS.
 * Install s3cmd
 * Disable apache-warning in `gsconfig.php`
 * Replace lines 169-171 of `/admin/filebrowser.php` with:
-		```php	
+		```php
 		$thumbnailLink = '<span>&nbsp;&ndash;&nbsp;&nbsp;</span><a href="javascript:void(0)" onclick="submitLink('.$CKEditorFuncNum.',\''.'http://***********.cloudfront.net/'.$subDir.$upload['name'].'\')">'.'CloudFront CDN'.'</a>';```
 * Install `s3_upload_sync` plugin to plugins folder
 * Crontab - `plugins/s3_upload_sync/sync.py`, 15s, 30s, 45s
